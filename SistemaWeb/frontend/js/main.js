@@ -2,7 +2,7 @@
  * Lógica Principal del Frontend - Clínica Aquino
  */
 
-const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = '/api';
 
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Verificación de sesión
