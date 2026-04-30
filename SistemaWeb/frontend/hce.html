@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historia Clínica Electrónica - Clínica Aquino</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="hce">
+
+    <aside class="sidebar">
+        <div class="logo-container">
+            <h2><i class="fas fa-heartbeat" style="color: var(--accent-green);"></i> Clínica Aquino</h2>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="index.html"><i class="fas fa-chart-pie"></i> <span>Dashboard</span></a></li>
+                <li><a href="citas.html"><i class="fas fa-calendar-alt"></i> <span>Citas</span></a></li>
+                <li><a href="hce.html" class="active"><i class="fas fa-notes-medical"></i> <span>Historia Clínica</span></a></li>
+                <li><a href="erp.html"><i class="fas fa-file-invoice-dollar"></i> <span>ERP Financiero</span></a></li>
+                <li><a href="pacs.html"><i class="fas fa-x-ray"></i> <span>Imágenes Médicas</span></a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <button id="menu-toggle" class="menu-toggle"><i class="fas fa-bars"></i></button>
+            <div class="user-profile">
+                <span>Dr. Admin Aquino</span>
+                <img src="https://ui-avatars.com/api/?name=Admin+Aquino&background=2ecc71&color=fff" alt="Perfil">
+                <button onclick="logout()" style="background: transparent; border: none; cursor: pointer; color: var(--text-muted); font-size: 1.2rem; margin-left: 15px;" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i></button>
+            </div>
+        </header>
+
+        <section class="content-area">
+            <div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1>Historia Clínica Electrónica (HCE)</h1>
+                    <p>Gestión de pacientes y registros médicos</p>
+                </div>
+                <button class="btn btn-primary" onclick="abrirModalPaciente()"><i class="fas fa-plus"></i> Nuevo Paciente</button>
+            </div>
+
+            <!-- Tabla de Datos -->
+            <div class="data-table-container">
+                <div class="flex-between">
+                    <h3>Directorio de Pacientes</h3>
+                    <input type="text" id="buscar-paciente" class="search-bar" placeholder="Buscar por nombre o cédula...">
+                </div>
+                <table id="tabla-pacientes">
+                    <thead>
+                        <tr>
+                            <th>Documento</th>
+                            <th>Nombre del Paciente</th>
+                            <th>Fecha Nacimiento</th>
+                            <th>Teléfono</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Los datos se cargarán mediante JS desde la API de Node.js -->
+                        <tr><td colspan="5" style="text-align: center;">Cargando pacientes...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+        <!-- Modal Paciente -->
+        <div id="modal-paciente" class="modal">
+            <div class="modal-content">
+                <span class="close-btn" onclick="closeModal('modal-paciente')">&times;</span>
+                <h2 id="modal-titulo" style="margin-bottom: 20px; color: var(--primary-blue);">Registrar Paciente</h2>
+                <form id="form-paciente">
+                    <input type="hidden" id="paciente-id">
+                    <div class="form-group">
+                        <label>Cédula/Documento</label>
+                        <input type="text" id="paciente-cedula" required>
+                    </div>
+                    <div style="display: flex; gap: 15px;">
+                        <div class="form-group" style="flex: 1;">
+                            <label>Nombre</label>
+                            <input type="text" id="paciente-nombre" required>
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label>Apellido</label>
+                            <input type="text" id="paciente-apellido" required>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 15px;">
+                        <div class="form-group" style="flex: 1;">
+                            <label>Fecha de Nacimiento</label>
+                            <input type="date" id="paciente-fecha">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label>Sexo</label>
+                            <select id="paciente-sexo">
+                                <option value="M">Masculino</option>
+                                <option value="F">Femenino</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono</label>
+                        <input type="text" id="paciente-telefono">
+                    </div>
+                    <div class="form-group">
+                        <label>Dirección</label>
+                        <input type="text" id="paciente-direccion">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Guardar Paciente</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/main.js"></script>
+    <script src="js/hce.js"></script>
+</body>
+</html>

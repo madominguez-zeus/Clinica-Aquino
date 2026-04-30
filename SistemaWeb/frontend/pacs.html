@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PACS Servidor de Imágenes - Clínica Aquino</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .dicom-viewer-sim {
+            background: #111;
+            border-radius: 10px;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #555;
+            flex-direction: column;
+            border: 2px dashed #333;
+            margin-top: 20px;
+        }
+        .dicom-viewer-sim i {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            color: #333;
+        }
+    </style>
+</head>
+<body data-page="pacs">
+
+    <aside class="sidebar">
+        <div class="logo-container">
+            <h2><i class="fas fa-heartbeat" style="color: var(--accent-green);"></i> Clínica Aquino</h2>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="index.html"><i class="fas fa-chart-pie"></i> <span>Dashboard</span></a></li>
+                <li><a href="citas.html"><i class="fas fa-calendar-alt"></i> <span>Citas</span></a></li>
+                <li><a href="hce.html"><i class="fas fa-notes-medical"></i> <span>Historia Clínica</span></a></li>
+                <li><a href="erp.html"><i class="fas fa-file-invoice-dollar"></i> <span>ERP Financiero</span></a></li>
+                <li><a href="pacs.html" class="active"><i class="fas fa-x-ray"></i> <span>Imágenes Médicas</span></a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <button id="menu-toggle" class="menu-toggle"><i class="fas fa-bars"></i></button>
+            <div class="user-profile">
+                <span>Dr. Admin Aquino</span>
+                <img src="https://ui-avatars.com/api/?name=Admin+Aquino&background=2ecc71&color=fff" alt="Perfil">
+                <button onclick="logout()" style="background: transparent; border: none; cursor: pointer; color: var(--text-muted); font-size: 1.2rem; margin-left: 15px;" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i></button>
+            </div>
+        </header>
+
+        <section class="content-area">
+            <div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1>Servidor de Imágenes Médicas (PACS)</h1>
+                    <p>Visualización y carga de estudios radiológicos</p>
+                </div>
+                <button class="btn btn-primary" onclick="abrirModalEstudio()"><i class="fas fa-upload"></i> Nuevo Estudio</button>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <!-- Lista de Estudios -->
+                <div class="data-table-container">
+                    <div class="flex-between">
+                        <h3>Archivo de Estudios</h3>
+                    </div>
+                    <table id="tabla-estudios">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Paciente</th>
+                                <th>Tipo</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td colspan="4" style="text-align: center;">Cargando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Visualizador -->
+                <div style="background: var(--white); padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+                    <h3>Visualizador DICOM (Simulación)</h3>
+                    <p id="estudio-activo" style="color: var(--accent-green); font-size: 0.9rem; margin-top: 5px; font-weight: bold;">Ningún estudio seleccionado</p>
+                    
+                    <div class="dicom-viewer-sim">
+                        <i class="fas fa-file-medical-alt"></i>
+                        <p>Selecciona un estudio de la lista para visualizarlo</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Modal Estudio -->
+        <div id="modal-estudio" class="modal">
+            <div class="modal-content">
+                <span class="close-btn" onclick="closeModal('modal-estudio')">&times;</span>
+                <h2 style="margin-bottom: 20px; color: var(--primary-blue);">Registrar Nuevo Estudio</h2>
+                <form id="form-estudio">
+                    <div class="form-group">
+                        <label>Paciente</label>
+                        <select id="estudio-paciente" required>
+                            <option value="">Seleccione un paciente...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo de Estudio</label>
+                        <select id="estudio-tipo" required>
+                            <option value="Radiografía">Radiografía</option>
+                            <option value="Tomografía">Tomografía Computarizada</option>
+                            <option value="Resonancia">Resonancia Magnética</option>
+                            <option value="Ecografía">Ecografía</option>
+                        </select>
+                    </div>
+                    <div style="display: flex; gap: 15px;">
+                        <div class="form-group" style="flex: 1;">
+                            <label>Fecha del Estudio</label>
+                            <input type="date" id="estudio-fecha" required>
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label>Médico Solicitante</label>
+                            <input type="text" id="estudio-medico" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Archivo DICOM/Imagen</label>
+                        <input type="file" id="estudio-archivo" accept="image/*,.dcm">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Subir y Registrar</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/main.js"></script>
+    <script src="js/pacs.js"></script>
+</body>
+</html>
